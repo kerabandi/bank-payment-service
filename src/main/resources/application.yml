@@ -1,0 +1,15 @@
+quarkus:
+  application:
+    name: bank-payment-service
+  log:
+    level: INFO
+
+#  datasource:
+#    db-kind: postgresql
+#    jdbc:
+#      url: ${DB_URL}
+#      username: ${DB_USERNAME}
+#      password: ${DB_PASSWORD}
+
+  http:
+    port: 8080

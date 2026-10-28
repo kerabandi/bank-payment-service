@@ -1,0 +1,24 @@
+quarkus:
+  test:
+    continuous-testing: DISABLED
+  log:
+    level: DEBUG
+
+
+kafka:
+  bootstrap:
+    servers: washi-srv:31092
+
+mp:
+  messaging:
+    incoming:
+      payments-in:
+        connector: smallrye-kafka
+        topic: bank.payments
+        group:
+          id: bank-payment-service
+        auto:
+          offset:
+            reset: earliest
+        value:
+          deserializer: com.bank.payment.messaging.PaymentDeserializer
