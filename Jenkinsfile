@@ -35,7 +35,8 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarQube-washi-srv') {
                     sh '''
-                ./mvnw -B sonar:sonar \
+                ./mvnw -B \
+                  org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                   -Dsonar.projectKey=bank-payment-service
             '''
                 }
