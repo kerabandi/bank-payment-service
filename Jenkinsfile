@@ -33,7 +33,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('sonarQube-washi-srv') {
                     sh '''
                 ./mvnw -B sonar:sonar \
                   -Dsonar.projectKey=bank-payment-service
