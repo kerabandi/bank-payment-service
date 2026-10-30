@@ -30,6 +30,17 @@ pipeline {
                 sh './mvnw -B clean verify'
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                ./mvnw -B sonar:sonar \
+                  -Dsonar.projectKey=bank-payment-service
+            '''
+                }
+            }
+        }
     }
 
     post {
