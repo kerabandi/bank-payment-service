@@ -16,6 +16,9 @@
         <quarkus.platform.version>3.40.1</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.6</surefire-plugin.version>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            target/jacoco-report/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
@@ -133,9 +136,6 @@
                 <quarkus.package.jar.enabled>false</quarkus.package.jar.enabled>
                 <skipITs>false</skipITs>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
-                <sonar.coverage.jacoco.xmlReportPaths>
-                    target/jacoco-report/jacoco.xml
-                </sonar.coverage.jacoco.xmlReportPaths>
             </properties>
         </profile>
     </profiles>
