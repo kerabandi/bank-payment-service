@@ -1,3 +1,10 @@
 quarkus:
   jacoco:
     report: true
+
+mp:
+  messaging:
+    incoming:
+      payments-in:
+        connector: smallrye-kafka
+        enabled: false
