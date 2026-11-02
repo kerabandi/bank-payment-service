@@ -13,3 +13,10 @@ quarkus:
 
   http:
     port: 8080
+
+mp:
+  messaging:
+    incoming:
+      payments-in:
+        connector: smallrye-kafka
+        enabled: ${payments.kafka.enabled}

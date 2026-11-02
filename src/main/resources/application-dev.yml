@@ -14,6 +14,7 @@ mp:
     incoming:
       payments-in:
         connector: smallrye-kafka
+        enabled: true
         topic: bank.payments
         group:
           id: bank-payment-service
