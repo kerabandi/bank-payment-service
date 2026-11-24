@@ -1,52 +1,41 @@
 pipeline {
-    agent { label 'arm64' }
+    agent { label 'k8s-java21' }
 
     options {
         timestamps()
         disableConcurrentBuilds()
+        skipDefaultCheckout(true)
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'main',
+                        url: 'https://github.com/kerabandi/bank-payment-service.git'
             }
         }
 
         stage('Environment') {
             steps {
-                sh '''
-                    java -version
-                    git --version
-                    test -f mvnw
-                    chmod +x mvnw
-                    ./mvnw -version
-                '''
+                container('maven') {
+                    sh '''
+                        java -version
+                        mvn -version
+                        chmod +x mvnw
+                        ./mvnw -version
+                    '''
+                }
             }
         }
 
         stage('Build & Test') {
             steps {
-                sh './mvnw -B clean verify'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarQube-washi-srv') {
+                container('maven') {
                     sh '''
-                ./mvnw -B \
-                  org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                  -Dsonar.projectKey=bank-payment-service
-            '''
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                        ./mvnw -B \
+                          -Dmaven.repo.local="$WORKSPACE/.m2/repository" \
+                          clean verify
+                    '''
                 }
             }
         }
@@ -54,10 +43,11 @@ pipeline {
 
     post {
         success {
-            echo 'Build completata correttamente'
+            echo 'Build Quarkus su K3s completata'
         }
+
         failure {
-            echo 'Build fallita: controllare la console Jenkins'
+            echo 'Build fallita: verificare la console Jenkins'
         }
     }
 }

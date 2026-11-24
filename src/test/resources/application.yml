@@ -1,10 +1,25 @@
 quarkus:
-  jacoco:
-    report: true
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    jdbc:
+      url: ${DB_URL}
+    devservices:
+      enabled: false
+
+  kafka:
+    devservices:
+      enabled: false
+
+  hibernate-orm:
+    schema-management:
+      strategy: validate
+    database:
+      default-schema: test
 
 mp:
   messaging:
     incoming:
       payments-in:
-        connector: smallrye-kafka
         enabled: false

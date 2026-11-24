@@ -3,13 +3,19 @@ quarkus:
     name: bank-payment-service
   log:
     level: INFO
+  hibernate-orm:
+    mapping:
+      format:
+        global: ignore
+    database:
+      default-schema: banking
 
-#  datasource:
-#    db-kind: postgresql
-#    jdbc:
-#      url: ${DB_URL}
-#      username: ${DB_USERNAME}
-#      password: ${DB_PASSWORD}
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    jdbc:
+      url: ${DB_URL}
 
   http:
     port: 8080

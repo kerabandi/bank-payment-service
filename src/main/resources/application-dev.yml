@@ -2,7 +2,7 @@ quarkus:
   test:
     continuous-testing: DISABLED
   log:
-    level: DEBUG
+    level: INFO
 
 
 kafka:
@@ -14,7 +14,7 @@ mp:
     incoming:
       payments-in:
         connector: smallrye-kafka
-        enabled: true
+        enabled: false
         topic: bank.payments
         group:
           id: bank-payment-service

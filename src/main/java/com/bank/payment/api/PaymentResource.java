@@ -1,34 +1,33 @@
 package com.bank.payment.api;
 
-import com.bank.payment.dto.PaymentRequest;
-import com.bank.payment.dto.PaymentResponse;
+import java.util.UUID;
+
+
+import com.bank.payment.dto.CreatePaymentRequest;
 import com.bank.payment.service.PaymentService;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Path("/api/payments")
 @Produces(MediaType.APPLICATION_JSON)
 public class PaymentResource {
 
     private final PaymentService paymentService;
 
-    @Inject
-    public PaymentResource(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
-
     @POST
-    public Response createPayment(PaymentRequest request) {
+    public Response createPayment(CreatePaymentRequest request, @HeaderParam("Idempotency-Key") String idempotencyKey) {
 
-        PaymentResponse result = paymentService.createPayment(request);
+
+        UUID paymentUuid = paymentService.createPayment(request, idempotencyKey);
 
         return Response.status(Response.Status.CREATED)
-                .entity(result)
+                .entity(paymentUuid)
                 .build();
     }
 }
