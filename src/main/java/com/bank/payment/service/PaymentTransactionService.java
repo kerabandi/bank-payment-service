@@ -5,6 +5,7 @@ import java.util.UUID;
 
 
 import com.bank.payment.dto.CreatePaymentRequest;
+import com.bank.payment.dto.LockedAccounts;
 import com.bank.payment.entity.Account;
 import com.bank.payment.entity.OutboxEvent;
 import com.bank.payment.entity.Payment;
@@ -13,6 +14,7 @@ import com.bank.payment.exception.PaymentConflictException;
 import com.bank.payment.mapper.PaymentMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -33,12 +35,10 @@ public class PaymentTransactionService {
             return existing.getPaymentId();
         }
 
-        Account source = em.find(Account.class, request.sourceAccountId());
-        Account target = em.find(Account.class, request.targetAccountId());
+        LockedAccounts accounts = lockAccounts(request.sourceAccountId(), request.targetAccountId());
 
-        if (source == null || target == null) {
-            throw new IllegalArgumentException("Source or target account not found");
-        }
+        Account source = accounts.source();
+        Account target = accounts.target();
 
         creditAndDebitTransactions(request);
 
@@ -99,6 +99,24 @@ public class PaymentTransactionService {
 
         if (accreditedRows != 1) {
             throw new IllegalStateException("account not found");
+        }
+    }
+
+    private LockedAccounts lockAccounts(Long sourceId, Long targetId) {
+        long firstId = Math.min(sourceId, targetId);
+        long secondId = Math.max(sourceId, targetId);
+
+        Account first = em.find(Account.class, firstId, LockModeType.PESSIMISTIC_WRITE);
+        Account second = em.find(Account.class, secondId, LockModeType.PESSIMISTIC_WRITE);
+
+        if (first == null || second == null) {
+            throw new IllegalArgumentException("Source or target account not found");
+        }
+
+        if (sourceId == firstId) {
+            return  new LockedAccounts(first, second);
+        } else {
+            return   new LockedAccounts(second, first);
         }
     }
 
